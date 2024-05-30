@@ -1,0 +1,10 @@
+packages:
+  - shiny
+  - ggplot2
+  - plotly
+  - DT
+  - moz.utils
+  - countrycode
+  - tidyverse
+  - readxl
+  - wesanderson
