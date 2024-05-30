@@ -1,59 +1,12 @@
-# Install required packages if not installed
-if (!requireNamespace("shiny", quietly = TRUE)) {
-  install.packages("shiny")
-}
-
-if (!requireNamespace("ggplot2", quietly = TRUE)) {
-  install.packages("ggplot2")
-}
-
-if (!requireNamespace("plotly", quietly = TRUE)) {
-  install.packages("plotly")
-}
-
-# Load required libraries
-library(shiny)
 library(ggplot2)
 library(DT)
 library(plotly)
 library(moz.utils)
 library(countrycode)
-# library(ggh4x)
 library(tidyverse)
 
-# pse_final <- read_csv("~/Imperial College London/HIV Inference Group - WP - Documents/Analytical datasets/key-populations/PSE/pse_final_sourced.csv", show_col_types = F)
-# prev_final <- read_csv("~/Imperial College London/HIV Inference Group - WP - Documents/Analytical datasets/key-populations/HIV prevalence/prev_final_sourced.csv", show_col_types = F)
-# art_final <- read_csv("~/Imperial College London/HIV Inference Group - WP - Documents/Analytical datasets/key-populations/ART coverage/art_final.csv", show_col_types = F)
 
-# wb_dat <- lapply(id, function(x) {
-#   p <- read_csv(paste0("archive/aaa_assign_province/", x, "/workbook_export_prev.csv"), show_col_types = F)
-#   a <- read_csv(paste0("archive/aaa_assign_province/", x, "/workbook_export_art.csv"), show_col_types = F) %>% mutate(indicator = "ART coverage/VLS")
-#   bind_rows(p, a)
-# }) %>%
-#   bind_rows()
-
-# write_csv(wb_dat, "~/Downloads/wb_dat.csv")
-
-# wb_dat <- read_csv("~/Downloads/wb_dat.csv", show_col_types = F)
-#
-# rel_data <- bind_rows(pse_final %>%
-#                        rename(provincial_value = population, value = prop_estimate, kp_estimate = count_estimate) %>%
-#                        mutate(indicator = "PSE"),
-#           prev_final %>% mutate(kp_estimate = value),
-#           art_final %>% mutate(kp_estimate = value)) %>%
-#   mutate(country = countrycode::countrycode(iso3, "iso3c", "country.name")) %>%
-#   select(country, indicator, kp, study_area, year, method, kp_estimate, provincial_value, value, study_idx) %>%
-#   filter(!is.na(value))
-#
-# survey_overview_data <- bind_rows(pse_final, wb_dat) %>%
-#   distinct(country.name, kp, indicator, year) %>%
-#   rename(country = country.name)
-#
-# ssa_iso3 <- moz.utils::ssa_iso3()
-#
-# all_data <- bind_rows(pse_final %>% mutate(indicator = "PSE"), wb_dat)
-
-all_data <- readxl::read_excel("~/Downloads/2024-03-20_LGH revision 2/2024-03-20_key-population-collated-data.xlsx", sheet = "Data") %>%
+all_data <- readxl::read_excel("data/2024-03-20_key-population-collated-data.xlsx", sheet = "Data") %>%
   mutate(indicator = case_when(
     indicator == "pse" ~ "PSE",
     indicator == "prevalence" ~ "HIV prevalence",
@@ -93,9 +46,14 @@ all_data <- readxl::read_excel("~/Downloads/2024-03-20_LGH revision 2/2024-03-20
   # ratio_text = ifelse(is.na(ratio), "", ratio_text)
   )
 
+all_data <- all_data %>%
+  mutate(study_idx = ifelse(observation_idx %in% c(2081, 2082, 2083, 2084, 2085), 373, study_idx)) ## why is this happening?
 
-  # select(country = country.name, study_area, kp, year, indicator, method, starts_with("count"), starts_with("prop"), denominator, study_idx) %>%
-  # filter(!is.na(prop_estimate))
+
+sources <- read_csv("data/sources.csv")
+
+if(length(all_data$study_idx[!all_data$study_idx %in% sources$study_idx]))
+  stop("Study IDs in data not in source sheet")
 
 # Define UI
 ui <- fluidPage(
@@ -130,9 +88,32 @@ ui <- fluidPage(
                             column(3, selectInput("indicator_select", "Indicator:", choices = c("PSE", "HIV prevalence", "ART coverage/VLS"))),
                             column(3, selectInput("toggle_select", "Data display:", choices = c("Raw data", "Relative to total population"), selected = "Relative to total population"))
                           ),
-                          plotlyOutput("results_plot"),
+                          plotlyOutput("results_plot", height = "30%"),
                           downloadButton("download_data", "Download Data"),
                           DTOutput("results_table")
+                        )
+                      ),
+                      tabPanel(
+                        "Sources",
+                        fluidPage(
+                          fluidRow(
+                            h2("Key population sources"),
+                            tags$div(style = "font-size: 18px", HTML("<p>Any publicly available sources without hyperlinks below can be requested from <b>kpestimates@unaids.org</b></p>")),
+                            br(),
+                            dataTableOutput("sources_table")
+                          )
+                        )
+                      ),
+                      tabPanel(
+                        "About",
+                        fluidPage(
+                          fluidRow(
+                            tags$div(style = "font-size: 16px",
+                              HTML("<p>This dataset should be cited as Stevens et al. (2024). Population size, HIV prevalence, and antiretroviral therapy coverage among key populations in sub-Saharan Africa: collation and synthesis of survey data 2010-2023. MedRxiv, 2022.07.27.22278071. <a href = https://doi.org/10.1101/2022.07.27.22278071 target = '_blank'>https://doi.org/10.1101/2022.07.27.22278071</a>, where further information on data collation and analysis can be found.</p>
+
+                                   <p>All data used in this analysis can be <a href = 'https://zenodo.org/records/10844137' target = '_blank'>downloaded here</a></p>")
+                            )
+                          )
                         )
                       )
          )
@@ -178,6 +159,7 @@ server <- function(input, output, session) {
     survey_availability() %>%
       ggplot(aes(x = year, y = fct_rev(iso3))) +
       geom_point(size = 2.5, color = wesanderson::wes_palette("Zissou1")[1]) +
+      scale_x_continuous(breaks = c(2012, 2016, 2020), limits = c(2010, 2023)) +
       scale_y_discrete(labels = ~countrycode::countrycode(.x, "iso3c", "country.name", custom_match = cc_plot()),
                        drop = F) +
       facet_wrap(~factor(indicator, levels = c("PSE", "HIV prevalence", "ART coverage/VLS"),
@@ -206,7 +188,7 @@ server <- function(input, output, session) {
 
        p <- data() %>%
           ggplot(aes(x=year, y=raw_estimate, color = method,
-                     text = paste("Area Name: ", study_area, "<br>Estimate (95%CI): ", raw_text, "<br>Study Index: ", study_idx))) +
+                     text = paste("Area Name: ", study_area, "<br>Estimate (95%CI): ", raw_text, "<br>Study ID: ", study_idx))) +
             geom_pointrange(aes(ymin = raw_lower, ymax = raw_upper), position = position_dodge2(width = 0.5), size = 1) +
             labs(x=element_blank(), y=y_lab) +
             expand_limits(y=0) +
@@ -232,7 +214,7 @@ server <- function(input, output, session) {
 
       p <- data() %>%
         ggplot(aes(x=year, y=ratio, color = method,
-                   text = paste("Area Name: ", study_area, "<br>Estimate (95%CI): ", ratio_text, "<br>Study Index: ", study_idx))) +
+                   text = paste("Area Name: ", study_area, "<br>Estimate (95%CI): ", ratio_text, "<br>Study ID: ", study_idx))) +
           geom_pointrange(aes(ymin = ratio_lower, ymax = ratio_upper), position = position_dodge2(width = 0.5), size = 1) +
           labs(x=element_blank(), y=y_lab) +
           expand_limits(y=0) +
@@ -289,6 +271,21 @@ server <- function(input, output, session) {
 
     datatable(dt, options = list(pageLength = 100))
 
+  })
+
+  function(text, link) {
+    as.character(tags$a(text, href=link))
+  }
+
+  output$sources_table <- renderDataTable({
+
+    sources <- sources %>%
+      mutate(study = ifelse(is.na(link), study, paste0("<a href='",sources$link, "' target = '_blank'>",sources$study,"</a>")),
+             study_idx = as.character(study_idx),
+             kp = str_replace(kp, "TG", "TGW")) %>%
+      select(`Study ID` = study_idx, `ISO-3 code` = iso3, Country = country, KP = kp, Year = year, Author = author, `Study name` = study, `Publicly available\nreport` = public_report)
+
+    datatable(sources, options = list(pageLength = 100), escape = F, filter = "top", selection = "multiple")
   })
 #
 #     if(input$toggle_select == "Raw data") {

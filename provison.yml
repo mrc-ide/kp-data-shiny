@@ -8,3 +8,7 @@ packages:
   - tidyverse
   - readxl
   - wesanderson
+
+package_sources:
+  github:
+    - mrc-ide/moz.utils
