@@ -8,6 +8,7 @@ packages:
   - tidyverse
   - readxl
   - wesanderson
+  - shinybrowser
 
 package_sources:
   github:
