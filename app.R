@@ -97,13 +97,31 @@ ui <- navbarPage("KP Data",
                         text-align: center
 
                      }
+                     @media screen and (min-width: 992px) and (max-width: 1199px) {
+                       .plot_div {
+                        width: 80%;
+                        margin-left: 10%
+                       }
+                     }
+                     @media screen and (min-width: 1200px) and (max-width: 1599px) {
+                       .plot_div {
+                        width: 70%;
+                        margin-left: 15%
+                       }
+                     }
+                     @media screen and (min-width: 1600px) {
+                       .plot_div {
+                        width: 60%;
+                        margin-left: 20%
+                       }
+                     }
                                            '))),
 
   tabPanel(
                         "Introduction",
                         fluidPage(
                           column(12,
-                                 tags$div(style = "width: 80%; margin-left: 10%",
+                                 tags$div(class = "plot_div",
                                       h2("Population size, HIV prevalence, and antiretroviral therapy coverage among key populations in sub-Saharan Africa: collation and synthesis of survey data 2010-2023"),
                                       tags$div(style = "font-size:16px",
                                         HTML("<p>Key population HIV programmes in sub-Saharan Africa (SSA) require epidemiologic information to ensure equitable and equal access to services. We consolidated survey data among female sex workers (FSW), men-who-have-sex-with-men (MSM), people who inject drugs (PWID), and transgender people to estimate national-level <b>key population size, HIV prevalence, and antiretroviral therapy (ART) coverage</b> for mainland SSA.</p>
@@ -126,7 +144,7 @@ ui <- navbarPage("KP Data",
                         "Data",
                         fluidPage(
                           column(12,
-                                 tags$div(style = "width: 60%; margin-left: 20%",
+                                 tags$div(class = "plot_div",
                                           fluidRow(
                                             column(3, selectInput("country_select", "Country:", choices = sort(unique(all_data$country)), selected = "Angola")),
                                             column(3, selectInput("kp_select", "Key Population:", choices = c("FSW", "MSM", "PWID", "TGW"), selected = "FSW")),
@@ -135,13 +153,16 @@ ui <- navbarPage("KP Data",
                                           ),
                                           plotlyOutput("results_plot", height = "30%"),
                                           fluidRow(
-                                            column(5, downloadButton("download_data", "Download filtered dataset"), offset = 2),
-                                            column(5, downloadButton("download_full_data", "Download complete dataset"))
+                                            column(5, downloadButton("download_data", "Download table"), offset = 2),
+                                            column(5, actionButton("download_full_data", "Download complete dataset", icon("download"), onclick ="window.open('https://zenodo.org/records/10844137', '_blank')"
+))
                                           ),
                                  ),
+                                 br(),
                                  tags$div(style = "width: 80%; margin-left: 10%",
                                           DTOutput("results_table")
-                                 )
+                                 ),
+                                 br()
                                 )
                           )
                         ),
@@ -246,14 +267,19 @@ server <- function(input, output, session) {
        p <- data() %>%
           ggplot(aes(x=year, y=raw_estimate, color = method,
                      text = paste("Area Name: ", study_area, "<br>Estimate (95%CI): ", raw_text, "<br>Study ID: ", study_idx))) +
-            geom_pointrange(aes(ymin = raw_lower, ymax = raw_upper), position = position_dodge2(width = 0.5), size = 1) +
-            labs(x=element_blank(), y=y_lab) +
+            geom_pointrange(aes(ymin = raw_lower, ymax = raw_upper), position = position_dodge2(width = 0.5), size = 1.5) +
+            labs(x=element_blank(), y=y_lab, color = "") +
             expand_limits(y=0) +
-            scale_x_continuous(limits = c(2010, 2023)) +
-            standard_theme()
+            scale_x_continuous(limits = c(2009.8, 2023), breaks = seq(2011, 2023, 2), expand = expansion(add = c(0,0.2))) +
+            scale_y_continuous(expand = expansion(mult = c(0,0.02))) +
+            geom_hline(aes(yintercept = 0), linewidth = 0.5) +
+            geom_vline(aes(xintercept = 2009.8), linewidth = 0.5) +
+            standard_theme() +
+            theme(panel.grid = element_blank())
+
 
        if(input$indicator_select != "PSE")
-         p <- p + scale_percent()
+         p <- p + scale_y_continuous(labels = scales::label_percent(), expand = expansion(c(0,0)))
 
        ggplotly(p, tooltip = "text")
 
@@ -276,16 +302,23 @@ server <- function(input, output, session) {
       p <- data() %>%
         ggplot(aes(x=year, y=ratio, color = method,
                    text = paste("Area Name: ", study_area, "<br>Estimate (95%CI): ", ratio_text, "<br>Study ID: ", study_idx))) +
-          geom_pointrange(aes(ymin = ratio_lower, ymax = ratio_upper), position = position_dodge2(width = 0.5), size = 1) +
-          labs(x=element_blank(), y=y_lab) +
+          geom_pointrange(aes(ymin = ratio_lower, ymax = ratio_upper), position = position_dodge2(width = 0.5), size = 1.5) +
+          labs(x=element_blank(), y=y_lab, color = "") +
           expand_limits(y=0) +
-          scale_x_continuous(limits = c(2010, 2023)) +
-          standard_theme()
+          scale_x_continuous(limits = c(2009.8, 2023), breaks = seq(2011, 2023, 2), expand = expansion(add = c(0,0.2))) +
+          scale_y_continuous(expand = expansion(mult = c(0,0.02))) +
+          geom_hline(aes(yintercept = 0), linewidth = 0.5) +
+          geom_vline(aes(xintercept = 2009.8), linewidth = 0.5) +
+          standard_theme() +
+          theme(panel.grid = element_blank())
 
       if(input$indicator_select == "PSE")
-        p <- p + scale_percent()
+        p <- p +
+              scale_y_continuous(labels = scales::label_percent(), expand = expansion(c(0,0.02)))
       else
-        p <- p + geom_hline(aes(yintercept = 1), linetype = 2)
+        p <- p +
+              geom_hline(aes(yintercept = 1), linetype = 2) +
+              scale_y_continuous(breaks = sort(c(pretty(c(data()$ratio_lower, data()$ratio, data()$ratio_upper), min.n = 3), 1)), expand = expansion(mult = c(0,0.02)))
 
       ggplotly(p, tooltip = "text")
 
@@ -311,6 +344,8 @@ server <- function(input, output, session) {
     }
 
     data() %>%
+      left_join(sources %>% select(study_idx, link)) %>%
+      mutate(study_idx = ifelse(is.na(link), study_idx, paste0("<a href='",sources$link, "' target = '_blank'>",study_idx,"</a>"))) %>%
       select(KP = kp, Area = study_area, Year = year, Indicator = indicator, Method = method, `Estimate (95% CI)` = raw_text, provincial_value_text, ratio_text, Denominator = sample_size, `Study ID` = study_idx) %>%
       rename_with(~paste(match), starts_with("provincial_value")) %>%
       rename_with(~paste(rel_est), starts_with("ratio"))
@@ -325,7 +360,11 @@ server <- function(input, output, session) {
     else
       out <- dt()
 
-    datatable(out, options = list(pageLength = 100))
+    datatable(out,
+              options = list(dom = "t",
+                                  pageLength = 10000),
+              escape = F,
+              rownames = F)
 
   })
 
@@ -341,7 +380,7 @@ server <- function(input, output, session) {
              kp = str_replace(kp, "TG", "TGW")) %>%
       select(`Study ID` = study_idx, `ISO-3 code` = iso3, Country = country, KP = kp, Year = year, Author = author, `Study name` = study, `Publicly available\nreport` = public_report)
 
-    datatable(sources, options = list(pageLength = 100), escape = F, filter = "top", selection = "multiple", rownames = F)
+    datatable(sources, options = list(pageLength = 10000), escape = F, filter = "top", selection = "multiple", rownames = F)
   })
 
   output$download_data <- downloadHandler(
