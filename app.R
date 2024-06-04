@@ -46,16 +46,16 @@ all_data <- readxl::read_excel("data/2024-03-20_key-population-collated-data.xls
          # provincial_value_text = str_trim(str_remove(provincial_value_text, "\\(NA, NA\\)")),
   across(c(ratio_text, raw_text, provincial_value_text), ~str_remove_all(.x, "NA|\\(\\, \\)|\\(NA, NA\\)|")),
 
+  raw_text = ifelse(is.na(raw_estimate), 'Private data', raw_text),
+
   provincial_value_text = case_when(
-    indicator == "PSE" & is.na(provincial_value) & is.na(ratio) ~ "-",
-    indicator == "PSE" & is.na(provincial_value) & !is.na(ratio) ~ "PSE proportion from report",
+    indicator == "PSE" & is.na(provincial_value) & is.na(ratio) & raw_text != "Private data" ~ "-",
+    indicator == "PSE" & is.na(provincial_value) & !is.na(ratio) & raw_text != "Private data" ~ "PSE proportion from report",
     TRUE ~ provincial_value_text),
 
   ratio_text = case_when(
-    indicator == "PSE" & is.na(provincial_value) & is.na(ratio) ~ "Unmatched area",
+    indicator == "PSE" & is.na(provincial_value) & is.na(ratio) & raw_text != "Private data" ~ "Unmatched area",
     TRUE ~ ratio_text),
-
-  raw_text = ifelse(is.na(raw_estimate), 'Private data', raw_text)
 
 
   # ratio_text = ifelse(is.na(ratio), "", ratio_text)
@@ -65,7 +65,7 @@ all_data <- all_data %>%
   mutate(study_idx = ifelse(observation_idx %in% c(2081, 2082, 2083, 2084, 2085), 373, study_idx)) ## why is this happening?
 
 
-sources <- read_csv("data/sources.csv")
+sources <- read_csv("data/sources.csv", show_col_types = F)
 
 if(length(all_data$study_idx[!all_data$study_idx %in% sources$study_idx]))
   stop("Study IDs in data not in source sheet")
@@ -135,7 +135,8 @@ ui <- navbarPage("KP Data",
                                       br(),
                                       h3("Availability of key population surveys"),
                                       selectInput("kp_survey_select", "Key Population:", choices = c("FSW", "MSM", "PWID", "TGW"), selected = "FSW"),
-                                      plotOutput("dotPlot", height = "800px")
+                                      plotOutput("dotPlot", height = "750px"),
+                                      br()
                             )
                           )
                         )
@@ -343,13 +344,24 @@ server <- function(input, output, session) {
       rel_est <- "ART coverage ratio"
     }
 
+    # browser()
+
     data() %>%
-      left_join(sources %>% select(study_idx, link)) %>%
-      mutate(study_idx = ifelse(is.na(link), study_idx, paste0("<a href='",sources$link, "' target = '_blank'>",study_idx,"</a>"))) %>%
-      select(KP = kp, Area = study_area, Year = year, Indicator = indicator, Method = method, `Estimate (95% CI)` = raw_text, provincial_value_text, ratio_text, Denominator = sample_size, `Study ID` = study_idx) %>%
+      left_join(sources %>%
+                    filter(kp %in% c(input$kp_select, "ALL"),
+                           country == input$country_select) %>%
+                    select(iso3, study_idx, link) %>%
+                    mutate(link_study = ifelse(is.na(link), study_idx, paste0("<a href='",link, "' target = '_blank'>",study_idx,"</a>"))) %>%
+                    select(study_idx, link_study) %>%
+                    group_by(study_idx) %>%
+                    summarise(link_study = toString(link_study))) %>%
+      select(KP = kp, Area = study_area, Year = year, Indicator = indicator, Method = method, `Estimate (95% CI)` = raw_text, provincial_value_text, ratio_text, Denominator = sample_size, `Study ID` = link_study) %>%
       rename_with(~paste(match), starts_with("provincial_value")) %>%
       rename_with(~paste(rel_est), starts_with("ratio"))
   })
+
+
+
 
 
   output$results_table <- renderDT({
@@ -375,7 +387,7 @@ server <- function(input, output, session) {
   output$sources_table <- renderDataTable({
 
     sources <- sources %>%
-      mutate(study = ifelse(is.na(link), study, paste0("<a href='",sources$link, "' target = '_blank'>",sources$study,"</a>")),
+      mutate(study = ifelse(is.na(link), study, paste0("<a href='", link, "' target = '_blank'>", study,"</a>")),
              study_idx = as.character(study_idx),
              kp = str_replace(kp, "TG", "TGW")) %>%
       select(`Study ID` = study_idx, `ISO-3 code` = iso3, Country = country, KP = kp, Year = year, Author = author, `Study name` = study, `Publicly available\nreport` = public_report)
