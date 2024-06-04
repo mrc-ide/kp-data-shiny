@@ -160,7 +160,7 @@ ui <- navbarPage("KP Data",
                                           ),
                                  ),
                                  br(),
-                                 tags$div(style = "width: 80%; margin-left: 10%",
+                                 tags$div(class = "plot_div",
                                           DTOutput("results_table")
                                  ),
                                  br()
@@ -319,7 +319,7 @@ server <- function(input, output, session) {
       else
         p <- p +
               geom_hline(aes(yintercept = 1), linetype = 2) +
-              scale_y_continuous(breaks = sort(c(pretty(c(data()$ratio_lower, data()$ratio, data()$ratio_upper), min.n = 3), 1)), expand = expansion(mult = c(0,0.02)))
+              scale_y_continuous(breaks = sort(c(pretty(c(1, data()$ratio_lower, data()$ratio, data()$ratio_upper), min.n = 3), 1)), expand = expansion(mult = c(0,0.02)))
 
       ggplotly(p, tooltip = "text")
 
@@ -355,6 +355,7 @@ server <- function(input, output, session) {
                     select(study_idx, link_study) %>%
                     group_by(study_idx) %>%
                     summarise(link_study = toString(link_study))) %>%
+      arrange(year, study_idx) %>%
       select(KP = kp, Area = study_area, Year = year, Indicator = indicator, Method = method, `Estimate (95% CI)` = raw_text, provincial_value_text, ratio_text, Denominator = sample_size, `Study ID` = link_study) %>%
       rename_with(~paste(match), starts_with("provincial_value")) %>%
       rename_with(~paste(rel_est), starts_with("ratio"))
@@ -389,7 +390,7 @@ server <- function(input, output, session) {
     sources <- sources %>%
       mutate(study = ifelse(is.na(link), study, paste0("<a href='", link, "' target = '_blank'>", study,"</a>")),
              study_idx = as.character(study_idx),
-             kp = str_replace(kp, "TG", "TGW")) %>%
+             kp = str_replace(kp, "\\bTG\\b", "TGW")) %>%
       select(`Study ID` = study_idx, `ISO-3 code` = iso3, Country = country, KP = kp, Year = year, Author = author, `Study name` = study, `Publicly available\nreport` = public_report)
 
     datatable(sources, options = list(pageLength = 10000), escape = F, filter = "top", selection = "multiple", rownames = F)
