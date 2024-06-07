@@ -13,3 +13,5 @@ packages:
 package_sources:
   github:
     - mrc-ide/moz.utils
+    - vimc/orderly
+    - vimc/orderlyweb
