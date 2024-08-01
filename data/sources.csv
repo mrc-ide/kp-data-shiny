@@ -173,6 +173,8 @@ Sex with Men in Luanda, Angola.: Final Report",Angola MoH,,Yes
 116,KEN,Kenya,TG,2017,"Disparities in HIV/STI burden and care coverage among men and transgender persons who have sex with men in Nairobi, Kenya: a cross-sectional study",Smith et al.,https://bmjopen.bmj.com/content/11/12/e055783,Yes
 116,ZAF,South Africa,MSM,2017,"HIV testing, care and viral suppression among men who have sex with men and transgender individuals in Johannesburg, South Africa.",Fearon et al.,https://researchonline.lshtm.ac.uk/id/eprint/4657216/,Yes
 116,ZAF,South Africa,TG,2017,"HIV testing, care and viral suppression among men who have sex with men and transgender individuals in Johannesburg, South Africa.",Fearon et al.,https://researchonline.lshtm.ac.uk/id/eprint/4657216/,Yes
+116,ZAF,South Africa,MSM,2017,Online socializing among men who have sex with men and transgender people in Nairobi and Johannesburg and implications for public health‐related research and health promotion: an analysis of qualitative and respondent‐driven sampling survey data,Fearon et al.,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7527758/#jia225603-sup-0001,Yes
+116,ZAF,South Africa,TG,2017,Online socializing among men who have sex with men and transgender people in Nairobi and Johannesburg and implications for public health‐related research and health promotion: an analysis of qualitative and respondent‐driven sampling survey data,Fearon et al.,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7527758/#jia225603-sup-0001,Yes
 117,KEN,Kenya,MSM,2019,"HIV prevalence, testing and treatment among men who have sex with men through engagement in virtual sexual networks in Kenya: a cross-sectional bio-behavioural study",Bhattacharjee et al.,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7319161/,Yes
 118,KEN,Kenya,MSM,2021,"Rectal microbiota diversity in Kenyan MSM is inversely associated with frequency of receptive anal sex, independent of HIV status",Gebrebrhan et al.,https://journals.lww.com/aidsonline/Fulltext/2021/06010/Rectal_microbiota_diversity_in_Kenyan_MSM_is.10.aspx,Yes
 120,KEN,Kenya,TG,2019,"Peer Mobilization and Human Immunodeficiency Virus (HIV) Partner Notification Services Among Gay, Bisexual, and Other Men Who Have Sex With Men and Transgender Women in Coastal Kenya Identified a High Number of Undiagnosed HIV Infections",Dijkstra et al.,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8186249/#sup1,Yes
@@ -354,8 +356,6 @@ Sex with Men in Luanda, Angola.: Final Report",Angola MoH,,Yes
 244,ZAF,South Africa,MSM,2019,"SOUTH AFRICAN MEN’S HEALTH MONITORING SURVEY: A BIOLOGICAL AND BEHAVIOURAL SURVEY AMONG MEN WHO HAVE SEX WITH MEN IN SOUTH AFRICA, 2019 (SAMHMS-II) Final Repor","The Aurum Institute, Anova Health Institute",https://auruminstitute.org/images/Docs/South_Africa_Mens_Health_Monitoring_Study_SAMHMS2019_cleared_20Oct20.pdf,Yes
 245,ZAF,South Africa,MSM,2017,"Gender identity and HIV risk among men who have sex with men in Cape Town, South Africa",Jobson et al.,https://doi.org/10.1080/09540121.2018.1465175,Yes
 245,ZAF,South Africa,TG,2017,"Gender identity and HIV risk among men who have sex with men in Cape Town, South Africa",Jobson et al.,https://doi.org/10.1080/09540121.2018.1465175,Yes
-116,ZAF,South Africa,MSM,2017,Online socializing among men who have sex with men and transgender people in Nairobi and Johannesburg and implications for public health‐related research and health promotion: an analysis of qualitative and respondent‐driven sampling survey data,Fearon et al.,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7527758/#jia225603-sup-0001,Yes
-116,ZAF,South Africa,TG,2017,Online socializing among men who have sex with men and transgender people in Nairobi and Johannesburg and implications for public health‐related research and health promotion: an analysis of qualitative and respondent‐driven sampling survey data,Fearon et al.,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7527758/#jia225603-sup-0001,Yes
 247,ZAF,South Africa,MSM,2015,HIV prevalence and incidence in a cohort of South African men and transgender women who have sex with men: the Sibanye Methods for Prevention Packages Programme (MP3) project,Sullivan et al.,https://pubmed.ncbi.nlm.nih.gov/33000918/,Yes
 247,ZAF,South Africa,TG,2015,HIV prevalence and incidence in a cohort of South African men and transgender women who have sex with men: the Sibanye Methods for Prevention Packages Programme (MP3) project,Sullivan et al.,https://pubmed.ncbi.nlm.nih.gov/33000918/,Yes
 248,ZAF,South Africa,TG,2018,The HIV care continuum for transgender women in three metropolitan municipalities in South Africa: Findings from the 2018-2019 bio-behavioral survey,Cloete et al.,https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3962122,Yes
@@ -367,8 +367,8 @@ Sex with Men in Luanda, Angola.: Final Report",Angola MoH,,Yes
 255,ZAF,South Africa,FSW,2016,"Cross-sectional study of female sex workers in Soweto, South Africa: Factors associated with HIV infection",Coetzee et al.,https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0184775#sec009,Yes
 256,ZAF,South Africa,FSW,2014,"Field evaluation of Standard Diagnostics' Bioline HIV/Syphilis Duo test among female sex workers in Johannesburg, South Africa",Black et al.,https://sti.bmj.com/content/92/7/495,Yes
 257,ZAF,South Africa,FSW,2019,"Community-led cross-sectional study of social and employment circumstances, HIV and associated factors amongst female sex workers in South Africa: study protocol",Milovanovic et al.,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8330713/,Yes
-258,ZMB,Zambia,MSM,2021,BIOBEHAVIORAL SURVEY AMONG MEN WHO HAVE SEX WITH MEN IN ZAMBIA: 2021 Summary Sheet,Zambia MoH,,No
-258,ZMB,Zambia,TG,2021,BIOBEHAVIORAL SURVEY AMONG MEN WHO HAVE SEX WITH MEN IN ZAMBIA: 2021 Summary Sheet,Zambia MoH,,No
+258,ZMB,Zambia,MSM,2021,BIOBEHAVIORAL SURVEY AMONG MEN WHO HAVE SEX WITH MEN IN ZAMBIA,Zambia MoH,https://icap.columbia.edu/wp-content/uploads/ZAMBIA-MSM-BBS_FINAL-.pdf,Yes
+258,ZMB,Zambia,TG,2021,BIOBEHAVIORAL SURVEY AMONG MEN WHO HAVE SEX WITH MEN IN ZAMBIA,Zambia MoH,https://icap.columbia.edu/wp-content/uploads/ZAMBIA-MSM-BBS_FINAL-.pdf,No
 259,ZMB,Zambia,FSW,2017,INTEGRATED BIOLOGICAL AND BEHAVIOURAL SURVEILLANCE SURVEY AMONG FEMALE SEX WORKERS IN ZAMBIA Findings,Musheke,,Yes
 260,ZMB,Zambia,FSW,2015,Mapping And Size Estimates Of Female Sex Workers Populations In The Ten Corridors Of Hope III Project Districts In Zambia: Technical Report,Corridors of Hope,https://www.researchgate.net/publication/283906818_Mapping_and_Population_Size_Estimates_of_Female_Sex_Workers,Yes
 261,ZMB,Zambia,FSW,2015,"Integrated Biological And Behavioural Surveillance Survey Among Female Sex Workers In Zambia, 2015","Zambia MoH, FHI 360",https://www.nac.org.zm/sites/default/files/publications/IBBS%202015%20Final%20Report%204%20March%202016.pdf,Yes
@@ -389,16 +389,16 @@ Sex with Men in Luanda, Angola.: Final Report",Angola MoH,,Yes
 310,ERI,Eritrea,FSW,2017,"Report On HIV, HBsAg, HCV Ab and Syphilis Prevalence and HIV Risk Behaviors Survey among Commercial Sex Workers in Eritrea-2019 (reports 2017)",Eritrea MoH,,Yes
 310,ERI,Eritrea,FSW,2019,"Report On HIV, HBsAg, HCV Ab and Syphilis Prevalence and HIV Risk Behaviors Survey among Commercial Sex Workers in Eritrea-2019",Eritrea MoH,,Yes
 311,ERI,Eritrea,FSW,2014,"Report On HIV, HSV-2, HBsAg, HCV Ab and Syphilis Prevalence and HIV Risk Behavior Survey among Female Sex Workers in Eritrea-2014",Eritrea MoH,,Yes
-314,BFA,Burkina Faso,FSW,2022,2022 ESDG,Burkina Faso MoH,,No
-314,BFA,Burkina Faso,MSM,2022,2022 ESDG,Burkina Faso MoH,,No
-314,BFA,Burkina Faso,PWID,2022,2022 ESDG,Burkina Faso MoH,,No
+314,BFA,Burkina Faso,FSW,2022,2022 ESDG,Burkina Faso MoH,,Yes
+314,BFA,Burkina Faso,MSM,2022,2022 ESDG,Burkina Faso MoH,,Yes
+314,BFA,Burkina Faso,PWID,2022,2022 ESDG,Burkina Faso MoH,,Yes
 320,MOZ,Mozambique,MSM,2021,Round II BBS,Mozambique MoH,,Yes
 321,BEN,Benin,FSW,2022,"Enquête de Surveillance de Deuxième Génération (ESDG) sur les IST, le VIH et le Sida auprès des adolescents-jeunes, camionneurs, personnes privées de liberté, travailleuses de sexe et clients, serveuses des bars et restaurants en 2021 au Bénin",Benin MoH,,Yes
 322,BEN,Benin,PWID,2021,"ENQUETE DE SURVEILLANCE DE DEUXIEME GENERATION AU SEIN DES HSH ET CDI, CARTOGRAPHIE DES LIEUX DE SOCIALISATION ET ESTIMATION DE TAILLE",Benin MoH,,Yes
 322,BEN,Benin,MSM,2022,"ENQUETE DE SURVEILLANCE DE DEUXIEME GENERATION AU SEIN DES HSH ET CDI, CARTOGRAPHIE DES LIEUX DE SOCIALISATION ET ESTIMATION DE TAILLE",Benin MoH,,Yes
-324,GIN,Guinea,FSW,2022,ESDG 2022,Guinea MoH,,No
-324,GIN,Guinea,MSM,2022,ESDG 2022,Guinea MoH,,No
-324,GIN,Guinea,PWID,2022,ESDG 2022,Guinea MoH,,No
+324,GIN,Guinea,FSW,2022,ESDG 2022,Guinea MoH,,Yes
+324,GIN,Guinea,MSM,2022,ESDG 2022,Guinea MoH,,Yes
+324,GIN,Guinea,PWID,2022,ESDG 2022,Guinea MoH,,Yes
 325,RWA,Rwanda,MSM,2015,BBS 2015,Rwanda MoH?,,Yes
 325,RWA,Rwanda,FSW,2015,BBS 2015,Rwanda MoH,https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9461641/,Yes
 327,COG,Congo - Brazzaville,FSW,2018,"ENQUETE COMPORTEMENTALE COUPLEE A LA SEROLOGIE VIH CHEZ LES HOMMES AYANT DES RAPPORTS SEXUELS AVEC LES HOMMES, LES  PROFESSIONNELLES DE SEXE, LES CONSOMMATEURS DE DROGUES INJECTABLES ET LES DETENUS EN REPUBLIQUE DU CONGO",COG MoH,,
@@ -412,13 +412,13 @@ Sex with Men in Luanda, Angola.: Final Report",Angola MoH,,Yes
 335,COD,Congo - Kinshasa,TG,2022,RAPPORT DE L’ENQUETE SUR LA CARTOGRAPHIE PROGRAMMATIQUE ET ESTIMATION DE LA TAILLE DES POPULATIONS CLES EXPOSEES AUX RISQUES D’INFECTION A VIH ET DES IST DANS 9 PROVINCES DE LA REPUBLIQUE DEMOCRATIQUE DU CONGO,DRC MoH,,Yes
 336,ZAF,South Africa,TG,2021,Populations size estimates for Transgender persons in South Africa,Beyond Zero,,Yes
 337,RWA,Rwanda,FSW,2019,Success of key population program on HIV control among female sex workers in Rwanda,RWA  MoH,https://programme.ias2023.org/Abstract/Abstract/?abstractid=4245,Yes
-338,ZMB,Zambia,PWID,2021,2021 BBS among PWID,ZMB MoH,,No
-339,ZMB,Zambia,FSW,2023,2023 BBS among FSW,ZMB MoH,,No
+338,ZMB,Zambia,PWID,2021,Biobehavioral Survey Among People Who Inject Drugs in Selected Towns in Zambia 2021,ZMB MoH,https://icap.columbia.edu/wp-content/uploads/Zambia-PWID-BBS-Report_signed.pdf,Yes
+339,ZMB,Zambia,FSW,2023,ZAMBIA BIOBEHAVIORAL SURVEY AND POPULATION SIZE ESTIMATION FOR FEMALE SEX WORKERS AND SEXUALLY EXPLOITED GIRLS,ZMB MoH,https://icap-aws-bucket.s3.amazonaws.com/icapcolumbiau/wp-content/uploads/ZMBBS-FSW-2023-Summary-Sheet_15Dec2023_FINAL_cleared.pdf,Yes
 342,BEN,Benin,FSW,2021,Cartographie des lieux de fréquentation/socialisation des travailleuses de sexe et des intervenants dans la lutte contre le VIH / Sida et les IST en milieu prostitutionnel au Bénin en 2021,Benin MoH,,Yes
 343,BEN,Benin,FSW,2014,"MAPPING DES SITES DE PROSTITUTION ""POINTS CHAUDS"" ET DENOMBREMENT DES TRAVAILLEUSES DE SEXE, DES SERVICES DE SANTE, ONG ET ASSOCIATIONS INTERVENANT DANS LE DOMAINE DE LA LUTTE CONTRE LES IST ET LE VIH/SIDA",Benin MoH,,Yes
 344,ZWE,Zimbabwe,FSW,2021,"AMETHIST – A Risk-Differentiated, Community-Led Intervention to Strengthen Uptake and Engagement with HIV Prevention and Care Cascades Among Female Sex Workers in Zimbabwe: The Results of a Cluster Randomised Trial",Cowan et al,https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4492697,Yes
 346,TCD,Chad,MSM,2021,"Enquête biologique, comportementale et d’estimation de la taille chez les populations clés et vulnérables au Tchad
-VIH au Tchad",TCD MoH,,No
+VIH au Tchad",TCD MoH,,Yes
 347,TCD,Chad,FSW,2017,CARTOGRAPHIE ET DENOMBREMENT DES POINTS CHAUDS DE FREQUENTATION DES POPULATIONS CLES DANS 11 VILLES DU TCHAD,TCD MoH,,Yes
 347,TCD,Chad,MSM,2017,CARTOGRAPHIE ET DENOMBREMENT DES POINTS CHAUDS DE FREQUENTATION DES POPULATIONS CLES DANS 11 VILLES DU TCHAD,TCD MoH,,Yes
 347,TCD,Chad,PWID,2017,CARTOGRAPHIE ET DENOMBREMENT DES POINTS CHAUDS DE FREQUENTATION DES POPULATIONS CLES DANS 11 VILLES DU TCHAD,TCD MoH,,Yes
@@ -482,6 +482,10 @@ VIH au Tchad",TCD MoH,,No
 370,MOZ,Mozambique,PWID,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVINCIA DE MAPUTO,Mozambique MoH,,Yes
 370,MOZ,Mozambique,TGW,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVINCIA DE MAPUTO,Mozambique MoH,,Yes
 370,MOZ,Mozambique,TGM,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVINCIA DE MAPUTO,Mozambique MoH,,Yes
+370,MOZ,Mozambique,MSM,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
+370,MOZ,Mozambique,PWID,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
+370,MOZ,Mozambique,TGW,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
+370,MOZ,Mozambique,TGM,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
 373,NER,Niger,FSW,2015,Enquête de Surveillance de Seconde Génération sur le VIH/sida au Niger 2015,Niger MoH,,Yes
 373,NER,Niger,MSM,2015,Enquête de Surveillance de Seconde Génération sur le VIH/sida au Niger 2015,Niger MoH,,Yes
 374,NER,Niger,FSW,2017,Enquête de Surveillance de Seconde Génération 2017 (SSG-2017) sur le VIH/sida au Niger,Niger MoH,,Yes
@@ -498,7 +502,7 @@ Testing Center Clients in Kigali, Rwand",Braunstein et al,https://pubmed.ncbi.nl
 383,GHA,Ghana,MSM,2023,POPULATION SIZE ESTIMATES AND INTEGRATED BIOLOGICAL AND BEHAVIOURAL SURVEY AMONG MEN WHO HAVE SEX WITH MEN IN GHANA,Ghana MoH,,No
 383,GHA,Ghana,TGW,2023,POPULATION SIZE ESTIMATES AND INTEGRATED BIOLOGICAL AND BEHAVIOURAL SURVEY AMONG TRANSGENER WOMEN AND MEN IN GHANA,Ghana MoH,,No
 383,GHA,Ghana,TGM,2023,POPULATION SIZE ESTIMATES AND INTEGRATED BIOLOGICAL AND BEHAVIOURAL SURVEY AMONG TRANSGENER WOMEN AND MEN IN GHANA,Ghana MoH,,No
-370,MOZ,Mozambique,MSM,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
-370,MOZ,Mozambique,PWID,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
-370,MOZ,Mozambique,TGW,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
-370,MOZ,Mozambique,TGM,2022,INQUÉRITO SOBRE O MAPEAMENTO E ESTIMATIVA DO TAMANHO DA POPULAÇÃO-CHAVE: PROVÍNCIA DE INHAMBANE,Mozambique MoH,,Yes
+400,ZWE,Zimbabwe,FSW,2023,Updating the Population Size Estimate for Female Sex Workers in Zimbabwe,CeSHHAR,,Yes
+401,ZAF,South Africa,FSW,2018,"ART coverage and viral suppression among female sex workers living with HIV in eThekwini, South Africa: Baseline findings from the Siyaphambili study",Comins et al.,https://journals.plos.org/globalpublichealth/article?id=10.1371/journal.pgph.0002783,Yes
+402,ERI,Eritrea,FSW,2023,"HIV, HBsAg, HCV Ab and Syphilis Prevalence and HIV Risk Behaviors Survey among Commercial Sex Workers in Eritrea-2023",Eritrea MoH,,Yes
+403,GMB,Gambia,FSW,2023,"Integrated Biobehavioral Survey, Mapping and Size Estimation for Key Population Groups in The Gambia",Enda/MoH/JHU,,Yes

@@ -5,10 +5,13 @@ library(moz.utils)
 library(countrycode)
 library(tidyverse)
 library(shinybrowser)
+library(sf)
+library(wesanderson)
 
-zenodo_version <- 10844137
+zenodo_version <- 13144705
+data_path <- "data/2024-07-31_key-population-collated-data.xlsx"
 
-all_data <- readxl::read_excel("data/2024-03-20_key-population-collated-data.xlsx", sheet = "Data") %>%
+all_data <- readxl::read_excel(data_path, sheet = "Data") %>%
   mutate(indicator = case_when(
     indicator == "pse" ~ "PSE",
     indicator == "prevalence" ~ "HIV prevalence",
@@ -63,6 +66,69 @@ all_data <- readxl::read_excel("data/2024-03-20_key-population-collated-data.xls
 
 all_data <- all_data %>%
   mutate(study_idx = ifelse(observation_idx %in% c(2081, 2082, 2083, 2084, 2085), 373, study_idx)) ## why is this happening?
+
+estimates <- readxl::read_excel(data_path, sheet = "Estimates") %>%
+  mutate(indicator = case_when(
+    indicator == "pse" ~ "PSE",
+    indicator == "kpart" ~ "Number on ART",
+    indicator == "kplhiv" ~ "Number living with HIV",
+    indicator == "pse_count" ~ "PSE count (total)",
+    indicator == "pse_urban_count" ~ "PSE count (urban areas)",
+    indicator == "pse_prop" ~ "PSE proportion (total)",
+    indicator == "pse_urban_prop" ~ "PSE proportion (urban areas)",
+    indicator == "plhiv_prop" ~ "Proportion of total PLHIV among KP",
+    indicator == "prevalence" ~ "HIV prevalence",
+    indicator == "art_coverage" ~ "ART coverage")
+    )
+
+has_data <- crossing(kp = unique(all_data$kp),
+         indicator = unique(all_data$indicator),
+         iso3 = ssa_iso3()
+) %>%
+  left_join(
+    all_data %>%
+      distinct(iso3, indicator, kp) %>%
+      mutate(has_data = 1)
+) %>%
+  mutate(has_data = ifelse(is.na(has_data), 0, 1),
+         has_data = factor(has_data, labels = c("No", "Yes")),
+         indicator = case_when(
+           indicator == "ART coverage/VLS" ~ "ART coverage",
+           indicator == "PSE" ~ "PSE proportion (urban areas)",
+           TRUE ~ indicator
+           ))
+
+iso3_sort <- estimates %>%
+  filter(indicator == "PSE proportion (urban areas)") %>%
+  distinct(country, iso3) %>%
+  left_join(region()) %>%
+  arrange(four_region) %>%
+  mutate(iso3_idx = as.numeric(fct_inorder(country)))
+
+estimates <- estimates %>%
+  left_join(has_data) %>%
+  left_join(iso3_sort %>% select(iso3, iso3_idx)) %>%
+  mutate(xmin = iso3_idx - 0.48,
+         xmax = iso3_idx + 0.48)
+
+all_data <- all_data %>%
+  left_join(iso3_sort %>% select(iso3, iso3_idx)) %>%
+  left_join(region())
+
+grey <- read_sf(grey_areas())
+
+geographies <- read_sf(national_areas()) %>%
+  st_make_valid()
+
+bbox <- c(xmin = -17.5327797,
+          ymin = -35, ## -46.9697266,
+          xmax = 51.4113159179688,
+          ymax = 37.3404121398926)
+
+geographies <- st_crop(geographies, bbox) %>%
+  mutate(iso3 = area_id)
+
+pal <- wesanderson::wes_palette("Zissou1", 100, type = "continuous")
 
 
 sources <- read_csv("data/sources.csv", show_col_types = F)
@@ -155,7 +221,7 @@ ui <- navbarPage("KP Data",
                                           plotlyOutput("results_plot", height = "30%"),
                                           fluidRow(
                                             column(5, downloadButton("download_data", "Download table"), offset = 2),
-                                            column(5, actionButton("download_full_data", "Download complete dataset", icon("download"), onclick ="window.open('https://zenodo.org/records/10844137', '_blank')"
+                                            column(5, actionButton("download_full_data", "Download complete dataset", icon("download"), onclick ="window.open('https://zenodo.org/doi/10.5281/zenodo.10838437', '_blank')"
 ))
                                           ),
                                  ),
@@ -167,6 +233,21 @@ ui <- navbarPage("KP Data",
                                 )
                           )
                         ),
+                      # tabPanel(
+                      #     "Estimates",
+                      #     fluidPage(
+                      #       column(12,
+                      #              tags$div(class = "plot_div",
+                      #                       fluidRow(
+                      #                         column(3, selectInput("country_select_est", "Country:", choices = c("All countries", sort(unique(all_data$country))), selected = "All countries")),
+                      #                         column(3, selectInput("kp_select_est", "Key Population:", choices = c("FSW", "MSM", "PWID", "TGW"), selected = "FSW")),
+                      #                         column(3, selectInput("indicator_select_est", "Indicator:", choices = unique(estimates$indicator), selected = "HIV prevalence"))
+                      #                       ),
+                      #                       plotOutput("estimates_plot"),
+                      #              )
+                      #       )
+                      #       )
+                      #     ),
                       tabPanel(
                         "Sources",
                         fluidPage(
@@ -186,7 +267,7 @@ ui <- navbarPage("KP Data",
                             tags$div(style = "font-size: 16px",
                               HTML("<p>This dataset should be cited as Stevens et al. (2024). Population size, HIV prevalence, and antiretroviral therapy coverage among key populations in sub-Saharan Africa: collation and synthesis of survey data 2010-2023. MedRxiv, 2022.07.27.22278071. <a href = https://doi.org/10.1101/2022.07.27.22278071 target = '_blank'>https://doi.org/10.1101/2022.07.27.22278071</a>, where further information on data collation and analysis can be found.</p>
 
-                                   <p>All data used in this analysis can be <a href = 'https://zenodo.org/records/10844137' target = '_blank'>downloaded here</a></p>")
+                                   <p>All data used in this analysis can be <a href = 'https://zenodo.org/doi/10.5281/zenodo.10838437' target = '_blank'>downloaded here</a></p>")
                             )
                           )
                         )
@@ -226,6 +307,16 @@ server <- function(input, output, session) {
         indicator %in% input$indicator_select
       )
   })
+
+  # est <- reactive({
+  #   browser()
+  #   estimates %>%
+  #     filter(
+  #       country %in% input$country_select_est,
+  #       kp %in% input$kp_select_est,
+  #       indicator %in% input$indicator_select_est
+  #     )
+  # })
 
   output$dotPlot <- renderPlot({
     # browser()
@@ -361,10 +452,6 @@ server <- function(input, output, session) {
       rename_with(~paste(rel_est), starts_with("ratio"))
   })
 
-
-
-
-
   output$results_table <- renderDT({
 
     if (input$indicator_select == "PSE")
@@ -381,9 +468,70 @@ server <- function(input, output, session) {
 
   })
 
-  function(text, link) {
-    as.character(tags$a(text, href=link))
-  }
+  # estimates %>%
+  #   filter(kp == "FSW",
+  #          indicator == "PSE proportion (urban areas)") %>%
+  #   left_join(select(geographies, iso3)) %>%
+  #   ggplot() +
+  #   geom_sf(data = grey, aes(geometry = geometry), fill="darkgrey", size = 0.15) +
+  #   geom_sf(aes(geometry = geometry, fill=median), size = 0.15) +
+  #   # viridis::scale_fill_viridis(labels = scales::label_percent()) +
+  #   # scale_fill_gradientn(colours = rev(pal), labels = scales::label_percent(accuracy = accuracy)) +
+  #   labs(fill = "KPSE\nproportion ") +
+  #   coord_sf(datum = NA, expand = FALSE) +
+  #   theme_minimal(6) +
+  #   theme(
+  #     plot.margin = margin(0, 0, 0, 0),
+  #     legend.position = "bottom",
+  #     legend.key.width = unit(1.15, "lines"),
+  #     legend.key.height = unit(0.7, "lines"),
+  #     legend.text = element_text(size = rel(1.0), face = "plain"),
+  #     legend.title = element_text(size = rel(1.2), face = "bold"),
+  #     legend.box.spacing = unit(0, "points"),
+  #     legend.margin = margin(5.5, 0, 0, 0, "points"),
+  #     plot.background = element_rect(color = NA)
+  #   )
+
+  # output$estimates_plot <- renderPlot({
+  #
+  #   # browser()
+  #
+  #     kp_accuracy <-  c("FSW" = 0.1,  "MSM" = 0.1, "PWID" = 0.01 , "TGW" = 0.01)
+  #     accuracy <- kp_accuracy[input$kp_select_est]
+  #
+  #     p <- estimates %>%
+  #       filter(kp == input$kp_select_est,
+  #              indicator == "PSE proportion (urban areas)") %>%
+  #       left_join(select(geographies, iso3)) %>%
+  #       ggplot() +
+  #       geom_sf(data = grey, aes(geometry = geometry), fill="darkgrey", size = 0.15) +
+  #       geom_sf(aes(geometry = geometry, fill=median), size = 0.15) +
+  #       # viridis::scale_fill_viridis(labels = scales::label_percent()) +
+  #       scale_fill_gradientn(colours = rev(pal), labels = scales::label_percent(accuracy = accuracy)) +
+  #       labs(fill = "KPSE\nproportion") +
+  #       coord_sf(expand = FALSE) +
+  #       theme_minimal(6) +
+  #       theme(
+  #         axis.text = element_blank(),
+  #         # plot.margin(0, 0, 0, 0),
+  #         legend.position = "bottom",
+  #         legend.key.width = unit(1.15, "lines"),
+  #         legend.key.height = unit(0.7, "lines"),
+  #         legend.text = element_text(size = rel(1.0), face = "plain"),
+  #         legend.title = element_text(size = rel(1.2), face = "bold"),
+  #         legend.box.spacing = unit(0, "points"),
+  #         # legend.margin = margin(5.5, 0, 0, 0, "points"),
+  #         panel.grid.major = element_line(colour = 'transparent'),
+  #         plot.background = element_rect(color = NA)
+  #       )
+  #
+  #     p
+  #
+  #     # ggplotly(p) %>%
+  #     #   style(hoveron = 'fill')
+  #
+  #
+  # })
 
   output$sources_table <- renderDataTable({
 

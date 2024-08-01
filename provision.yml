@@ -9,6 +9,7 @@ packages:
   - readxl
   - wesanderson
   - shinybrowser
+  - sf
 
 package_sources:
   github:
