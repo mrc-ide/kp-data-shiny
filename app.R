@@ -190,7 +190,11 @@ ui <- navbarPage("KP Data",
                                  tags$div(class = "plot_div",
                                       h2("Population size, HIV prevalence, and antiretroviral therapy coverage among key populations in sub-Saharan Africa: collation and synthesis of survey data 2010-2023"),
                                       tags$div(style = "font-size:16px",
-                                        HTML("<p>Key population HIV programmes in sub-Saharan Africa (SSA) require epidemiologic information to ensure equitable and equal access to services. We consolidated survey data among female sex workers (FSW), men-who-have-sex-with-men (MSM), people who inject drugs (PWID), and transgender people to estimate national-level <b>key population size, HIV prevalence, and antiretroviral therapy (ART) coverage</b> for mainland SSA.</p>
+                                        HTML(
+                                        "<p><a href = 'https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(24)00236-5/fulltext' target = '_blank'>Stevens, O., Sabin, K., Garcia, S. A., Anderson, … Imai-Eaton, J. W. (2024). Key population size, HIV prevalence, and ART coverage in sub-Saharan Africa: systematic collation and synthesis of survey data, 2010-23. Lancet Global Health, 12. https://doi.org/10.1016/S2214-109X(24)00236-5</a></p>
+                                        <p>All data used in this analysis can be <b><a href = 'https://zenodo.org/doi/10.5281/zenodo.10838437' target = '_blank'>downloaded here</a></b></p>
+
+                                        <p>Key population HIV programmes in sub-Saharan Africa (SSA) require epidemiologic information to ensure equitable and equal access to services. We consolidated survey data among female sex workers (FSW), men-who-have-sex-with-men (MSM), people who inject drugs (PWID), and transgender people to estimate national-level <b>key population size, HIV prevalence, and antiretroviral therapy (ART) coverage</b> for mainland SSA.</p>
 
                              <p>Key population size estimates (KPSE), HIV prevalence, and ART coverage data from 39 SSA countries between 2010-2023 were collated from existing databases and verified against source documents. We used Bayesian mixed-effects spatial regression to model urban KPSE as a proportion of the gender/year/area-matched 15-49 years adult population. We modelled subnational key population HIV prevalence and ART coverage with age/gender/year/province-matched total population estimates as predictors.</p>
 
@@ -263,9 +267,9 @@ ui <- navbarPage("KP Data",
                       tabPanel(
                         "About",
                         fluidPage(
-                          fluidRow(
-                            tags$div(style = "font-size: 16px",
-                              HTML("<p>This dataset should be cited as Stevens et al. (2024). Population size, HIV prevalence, and antiretroviral therapy coverage among key populations in sub-Saharan Africa: collation and synthesis of survey data 2010-2023. MedRxiv, 2022.07.27.22278071. <a href = https://doi.org/10.1101/2022.07.27.22278071 target = '_blank'>https://doi.org/10.1101/2022.07.27.22278071</a>, where further information on data collation and analysis can be found.</p>
+                          column(12,
+                            tags$div(class = "plot_div", style = "font-size: 16px",
+                              HTML("<p>This dataset should be cited as <a href = 'https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(24)00236-5/fulltext' target = '_blank'>Stevens, O., Sabin, K., Garcia, S. A., Anderson, … Imai-Eaton, J. W. (2024). Key population size, HIV prevalence, and ART coverage in sub-Saharan Africa: systematic collation and synthesis of survey data, 2010-23. Lancet Global Health, 12. https://doi.org/10.1016/S2214-109X(24)00236-5</a>, where further information on data collation and analysis can be found.</p>
 
                                    <p>All data used in this analysis can be <a href = 'https://zenodo.org/doi/10.5281/zenodo.10838437' target = '_blank'>downloaded here</a></p>")
                             )
