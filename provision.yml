@@ -1,5 +1,6 @@
 packages:
   - shiny
+  - shinyjs
   - ggplot2
   - plotly
   - DT
