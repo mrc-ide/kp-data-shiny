@@ -6,6 +6,7 @@ library(countrycode)
 library(tidyverse)
 library(shinybrowser)
 library(sf)
+library(shinyjs)
 library(wesanderson)
 
 zenodo_version <- 13144705
@@ -182,6 +183,7 @@ ui <- navbarPage("KP Data",
                        }
                      }
                                            '))),
+                 useShinyjs(),
 
   tabPanel(
                         "Introduction",
@@ -237,21 +239,31 @@ ui <- navbarPage("KP Data",
                                 )
                           )
                         ),
-                      # tabPanel(
-                      #     "Estimates",
-                      #     fluidPage(
-                      #       column(12,
-                      #              tags$div(class = "plot_div",
-                      #                       fluidRow(
-                      #                         column(3, selectInput("country_select_est", "Country:", choices = c("All countries", sort(unique(all_data$country))), selected = "All countries")),
-                      #                         column(3, selectInput("kp_select_est", "Key Population:", choices = c("FSW", "MSM", "PWID", "TGW"), selected = "FSW")),
-                      #                         column(3, selectInput("indicator_select_est", "Indicator:", choices = unique(estimates$indicator), selected = "HIV prevalence"))
-                      #                       ),
-                      #                       plotOutput("estimates_plot"),
-                      #              )
-                      #       )
-                      #       )
-                      #     ),
+                      tabPanel(
+                          "Estimates",
+                          fluidPage(
+                            column(1),
+                            column(10,
+                                            fluidRow(
+                                              div(style = 'display: flex; align-items = center;',
+                                              column(3, selectInput("country_select_est", "Country:", choices = c("All countries", sort(unique(all_data$country))), selected = "All countries")),
+                                              column(3, selectInput("kp_select_est", "Key Population:", choices = c("FSW", "MSM", "PWID", "TGW"), selected = "FSW")),
+                                              column(3, selectInput("indicator_select_est", "Indicator:", choices = unique(estimates$indicator), selected = "HIV prevalence")),
+                                              column(2, downloadButton("download_estimates", label = "Download table"))
+                                            )),
+                                            fluidRow(
+                                              column(6,
+                                                     br(),
+                                                     plotOutput("estimates_plot", height = "70vh", width = "40vw")),
+                                              column(6, DTOutput("estimates_table"))
+                                            ),
+                                            br(),
+                                            br()
+
+
+                            )
+                            )
+                          ),
                       tabPanel(
                         "Sources",
                         fluidPage(
@@ -278,7 +290,6 @@ ui <- navbarPage("KP Data",
                       )
 
 )
-
 # Define server logic
 server <- function(input, output, session) {
 
@@ -312,15 +323,20 @@ server <- function(input, output, session) {
       )
   })
 
-  # est <- reactive({
-  #   browser()
-  #   estimates %>%
-  #     filter(
-  #       country %in% input$country_select_est,
-  #       kp %in% input$kp_select_est,
-  #       indicator %in% input$indicator_select_est
-  #     )
-  # })
+  observe({
+    req(input$country_select_est)
+    toggleState("kp_select_est", input$country_select_est == "All countries")
+  })
+
+  est <- reactive({
+    browser()
+    estimates %>%
+      filter(
+        country %in% input$country_select_est,
+        kp %in% input$kp_select_est,
+        indicator %in% input$indicator_select_est
+      )
+  })
 
   output$dotPlot <- renderPlot({
     # browser()
@@ -422,11 +438,10 @@ server <- function(input, output, session) {
 
   })
 
-  # dt <- reactiveVal()
+  ##### DATA TABLE
 
-  dt <- reactive({
+  data_table <- reactive({
 
-    # browser()
     if (input$indicator_select == "PSE") {
       match <- "Total population size"
       rel_est <- "PSE proportion (%)"
@@ -438,8 +453,6 @@ server <- function(input, output, session) {
       match <- "Total population ART coverage (%)"
       rel_est <- "ART coverage ratio"
     }
-
-    # browser()
 
     data() %>%
       left_join(sources %>%
@@ -459,10 +472,10 @@ server <- function(input, output, session) {
   output$results_table <- renderDT({
 
     if (input$indicator_select == "PSE")
-      out <- dt() %>%
+      out <- data_table() %>%
         select(-Denominator)
     else
-      out <- dt()
+      out <- data_table()
 
     datatable(out,
               options = list(dom = "t",
@@ -472,70 +485,203 @@ server <- function(input, output, session) {
 
   })
 
-  # estimates %>%
-  #   filter(kp == "FSW",
-  #          indicator == "PSE proportion (urban areas)") %>%
-  #   left_join(select(geographies, iso3)) %>%
-  #   ggplot() +
-  #   geom_sf(data = grey, aes(geometry = geometry), fill="darkgrey", size = 0.15) +
-  #   geom_sf(aes(geometry = geometry, fill=median), size = 0.15) +
-  #   # viridis::scale_fill_viridis(labels = scales::label_percent()) +
-  #   # scale_fill_gradientn(colours = rev(pal), labels = scales::label_percent(accuracy = accuracy)) +
-  #   labs(fill = "KPSE\nproportion ") +
-  #   coord_sf(datum = NA, expand = FALSE) +
-  #   theme_minimal(6) +
-  #   theme(
-  #     plot.margin = margin(0, 0, 0, 0),
-  #     legend.position = "bottom",
-  #     legend.key.width = unit(1.15, "lines"),
-  #     legend.key.height = unit(0.7, "lines"),
-  #     legend.text = element_text(size = rel(1.0), face = "plain"),
-  #     legend.title = element_text(size = rel(1.2), face = "bold"),
-  #     legend.box.spacing = unit(0, "points"),
-  #     legend.margin = margin(5.5, 0, 0, 0, "points"),
-  #     plot.background = element_rect(color = NA)
-  #   )
+  output$download_data <- downloadHandler(
 
-  # output$estimates_plot <- renderPlot({
-  #
-  #   # browser()
-  #
-  #     kp_accuracy <-  c("FSW" = 0.1,  "MSM" = 0.1, "PWID" = 0.01 , "TGW" = 0.01)
-  #     accuracy <- kp_accuracy[input$kp_select_est]
-  #
-  #     p <- estimates %>%
-  #       filter(kp == input$kp_select_est,
-  #              indicator == "PSE proportion (urban areas)") %>%
-  #       left_join(select(geographies, iso3)) %>%
-  #       ggplot() +
-  #       geom_sf(data = grey, aes(geometry = geometry), fill="darkgrey", size = 0.15) +
-  #       geom_sf(aes(geometry = geometry, fill=median), size = 0.15) +
-  #       # viridis::scale_fill_viridis(labels = scales::label_percent()) +
-  #       scale_fill_gradientn(colours = rev(pal), labels = scales::label_percent(accuracy = accuracy)) +
-  #       labs(fill = "KPSE\nproportion") +
-  #       coord_sf(expand = FALSE) +
-  #       theme_minimal(6) +
-  #       theme(
-  #         axis.text = element_blank(),
-  #         # plot.margin(0, 0, 0, 0),
-  #         legend.position = "bottom",
-  #         legend.key.width = unit(1.15, "lines"),
-  #         legend.key.height = unit(0.7, "lines"),
-  #         legend.text = element_text(size = rel(1.0), face = "plain"),
-  #         legend.title = element_text(size = rel(1.2), face = "bold"),
-  #         legend.box.spacing = unit(0, "points"),
-  #         # legend.margin = margin(5.5, 0, 0, 0, "points"),
-  #         panel.grid.major = element_line(colour = 'transparent'),
-  #         plot.background = element_rect(color = NA)
-  #       )
-  #
-  #     p
-  #
-  #     # ggplotly(p) %>%
-  #     #   style(hoveron = 'fill')
-  #
-  #
-  # })
+    filename = function() {
+      paste("kp_data_", zenodo_version, ".csv", sep = "")
+    },
+    content = function(file) {
+      write_csv(data_table() %>%
+                  left_join(sources %>% select(`Study ID` = study_idx, study, link)), file, na = "")
+    }
+  )
+
+  ##### ESTIMATES PLOT
+
+  type_df <- distinct(estimates, indicator) %>%
+    mutate(type = ifelse(indicator %in% c("Number on ART", "Number living with HIV", "PSE count (total)", "PSE count (urban areas)"),
+                         "count",
+                         "proportion"))
+
+  output$estimates_plot <- renderPlot({
+
+    if(input$country_select_est == "All countries") {
+
+      if(input$indicator_select_est != "Proportion of total PLHIV among KP") {
+
+        kp_accuracy <-  c("FSW" = 0.1,  "MSM" = 0.1, "PWID" = 0.01 , "TGW" = 0.01)
+        accuracy <- kp_accuracy[input$kp_select_est]
+
+        p <- estimates %>%
+          filter(kp == input$kp_select_est,
+                 indicator == input$indicator_select_est) %>%
+          left_join(select(geographies, iso3)) %>%
+          ggplot() +
+          geom_sf(data = grey, aes(geometry = geometry), fill="darkgrey", size = 0.15) +
+          geom_sf(aes(geometry = geometry, fill=median), size = 0.15) +
+          # viridis::scale_fill_viridis(labels = scales::label_percent()) +
+          labs(fill = element_blank()) +
+          coord_sf(expand = FALSE) +
+          theme_minimal(6) +
+          theme(
+            axis.text = element_blank(),
+            # plot.margin(0, 0, 0, 0),
+            legend.position = "bottom",
+            legend.key.width = unit(4, "lines"),
+            legend.key.height = unit(2, "lines"),
+            legend.text = element_text(size = rel(2.4)),
+            legend.title = element_text(size = rel(2.2), face = "bold"),
+            legend.box.spacing = unit(0, "points"),
+            legend.margin = margin(1, 0, 0, 0, "lines"),
+            panel.grid.major = element_line(colour = 'transparent'),
+            plot.background = element_rect(color = NA)
+          )
+
+        type <- filter(type_df, indicator == input$indicator_select_est)$type
+
+        if(type == "count") {
+
+          p <- p +
+            scale_fill_gradientn(colours = rev(pal), trans = "log", labels = scales::label_number(accuracy = 100, big.mark = ","))
+
+        } else {
+
+          if(input$indicator_select_est == "PSE proportion (total)" || input$indicator_select_est == "PSE proportion (urban areas)") {
+            kp_accuracy <-  c("FSW" = 0.1,  "MSM" = 0.1, "PWID" = 0.01 , "TGW" = 0.01)
+            accuracy <- kp_accuracy[input$kp_select_est]
+          } else {
+            accuracy = 1
+          }
+
+          p <- p +
+            scale_fill_gradientn(colours = rev(pal), labels = scales::label_percent(accuracy = accuracy), limits = c(0, NA))
+        }
+
+      } else {
+
+        plot_order <- c("SEN", "GMB", "GNB", "GIN", "SLE", "LBR", "MLI", "BFA", "CIV", "GHA", "TGO", "BEN", "NER", "NGA", "CMR", "TCD", "CAF", "SSD", "ERI", "ETH", "GAB", "COG", "GNQ", "COD", "UGA", "KEN", "RWA", "BDI", "TZA", "AGO", "ZMB", "MWI", "MOZ", "BWA", "ZWE", "NAM", "SWZ", "LSO", "ZAF")
+
+        p <- estimates %>%
+          filter(indicator == "Proportion of total PLHIV among KP") %>%
+          name_kp(F) %>%
+          # filter(iso3 != "ZAF",
+          #        indicator == "kplhiv") %>%
+          ggplot(aes(x=fct_rev(fct_relevel(iso3, plot_order)), y=median, fill=fct_rev(kp))) +
+          geom_col(position = "stack", show.legend = F) +
+          standard_theme() +
+          scale_y_continuous(labels = scales::label_percent(), expand = expansion(mult = c(0, .05))) +
+          scale_x_discrete(labels = ~countrycode::countrycode(sourcevar = .x, origin = "iso3c", destination = "country.name", custom_match = moz.utils::cc_plot()), expand = expansion(mult = c(0.02, .02))) +
+          scale_manual("fill", 4) +
+          labs(x=element_blank(), y="Proportion of total people living with HIV", fill=element_blank()) +
+          coord_flip() +
+          theme(legend.position = "right",
+                axis.text.x = element_text(size = rel(1.3)),
+                axis.text.y = element_text(size = rel(1.3)),
+                panel.grid.major.y = element_blank(),
+                panel.grid.minor.y = element_blank(),
+                panel.grid.minor.x = element_blank()
+          )
+
+      }
+    } else {
+
+      # browser()
+
+      type <- filter(type_df, indicator == input$indicator_select_est)$type
+
+      country_est <- estimates %>%
+        filter(country == input$country_select_est,
+               indicator == input$indicator_select_est) %>%
+        name_kp(T)
+
+      if(type == "count") {
+        p <- country_est %>%
+          ggplot(aes(x=kp, y=median)) +
+          geom_col(fill = wesanderson::wes_palette("Zissou1")[1]) +
+          geom_linerange(aes(ymin = lower, ymax = upper), position = position_dodge(.9)) +
+          standard_theme() +
+          scale_y_continuous(labels = scales::label_number(big.mark = ","), expand = expansion(c(0, 0.05))) +
+          labs(y=unique(country_est$indicator), x=element_blank()) +
+          theme(panel.grid = element_blank(),
+                axis.text.x = element_text(size = rel(1.3), face = "bold"),
+                axis.title.y = element_text(size = rel(1.3), face = "bold"),
+                axis.text.y = element_text(size = rel(1.4), face = "bold"),
+                plot.margin = margin(0,2,0,0, "lines"))
+      } else {
+        p <- country_est %>%
+          ggplot(aes(x=kp, y=median)) +
+          geom_col(fill = wesanderson::wes_palette("Zissou1")[1]) +
+          geom_linerange(aes(ymin = lower, ymax = upper), position = position_dodge(.9)) +
+          standard_theme() +
+          scale_y_continuous(labels = scales::label_percent(), expand = expansion(c(0, 0.05))) +
+          labs(y=unique(country_est$indicator), x=element_blank()) +
+          theme(panel.grid = element_blank(),
+                axis.text.x = element_text(size = rel(1.3), face = "bold"),
+                axis.title.y = element_text(size = rel(1.3), face = "bold"),
+                axis.text.y = element_text(size = rel(1.4), face = "bold"),
+                plot.margin = margin(0,2,0,0, "lines"))
+      }
+
+
+
+    }
+
+    p
+      # ggplotly(p) %>%
+      #   style(hoveron = 'fill')
+
+
+    })
+
+    ###### ESTIMATES TABLE
+
+  estimates_table <- reactive({
+    type <- filter(type_df, indicator == input$indicator_select_est)$type
+
+    if(input$country_select_est == "All countries") {
+      dat <- estimates %>%
+        filter(kp == input$kp_select_est,
+               indicator == input$indicator_select_est)
+
+    } else {
+      dat <- estimates %>%
+        filter(
+          country == input$country_select_est,
+          indicator == input$indicator_select_est)
+    }
+
+    dat <- dat %>%
+      rowwise() %>%
+      mutate(
+        across(c(median, lower, upper), ~ifelse(type == "proportion", .x*100, round(.x, -2))),
+        txt = ifelse(type == "proportion",
+                     sprintf("%0.2f (%0.2f, %0.2f)", median, lower, upper),
+                     sprintf("%d (%d, %d)", median, lower, upper)
+        )
+      ) %>%
+      select(Country = country, KP = kp, Indicator = indicator, `Estimate\n(95%CI)` = txt)
+
+  })
+
+    output$estimates_table <- renderDT({
+
+      datatable(estimates_table(),
+                options = list(pageLength = 20,
+                               dom = "tp"),
+                escape = F,
+                rownames = F)
+    })
+
+    output$download_estimates <- downloadHandler(
+
+      filename = function() {
+        paste("kp_estimates_", zenodo_version, ".csv", sep = "")
+      },
+      content = function(file) {
+        write_csv(estimates_table(), file, na = "")
+      }
+    )
+
 
   output$sources_table <- renderDataTable({
 
@@ -547,17 +693,6 @@ server <- function(input, output, session) {
 
     datatable(sources, options = list(pageLength = 10000), escape = F, filter = "top", selection = "multiple", rownames = F)
   })
-
-  output$download_data <- downloadHandler(
-
-    filename = function() {
-      paste("kp_data_", zenodo_version, ".csv", sep = "")
-    },
-    content = function(file) {
-      write_csv(dt() %>%
-                  left_join(sources %>% select(`Study ID` = study_idx, study, link)), file, na = "")
-    }
-  )
 
   # ncol() <- observe({
   #   if(get_width() > 2000)
