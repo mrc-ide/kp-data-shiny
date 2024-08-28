@@ -9,7 +9,7 @@ library(shinyjs)
 library(wesanderson)
 
 zenodo_version <- 13144705
-data_path <- "data/2024-07-31_key-population-collated-data.xlsx"
+data_path <- "data/2024-08-27_key-population-collated-data.xlsx"
 
 all_data <- readxl::read_excel(data_path, sheet = "Data") %>%
   mutate(indicator = case_when(
