@@ -9,4 +9,4 @@ readxl
 wesanderson
 shinybrowser
 sf
-github::mrc-ide/moz.utils@rename-orderly
+github::mrc-ide/moz.utils
