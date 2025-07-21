@@ -1,0 +1,12 @@
+shiny
+shinyjs
+ggplot2
+plotly
+DT
+countrycode
+tidyverse
+readxl
+wesanderson
+shinybrowser
+sf
+github::mrc-ide/moz.utils@rename-orderly
