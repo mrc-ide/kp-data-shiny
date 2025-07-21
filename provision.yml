@@ -4,7 +4,6 @@ packages:
   - ggplot2
   - plotly
   - DT
-  - moz.utils
   - countrycode
   - tidyverse
   - readxl
@@ -14,6 +13,4 @@ packages:
 
 package_sources:
   github:
-    - mrc-ide/moz.utils
-    - vimc/orderly
-    - vimc/orderlyweb
+    - mrc-ide/moz.utils@rename-orderly
